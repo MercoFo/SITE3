@@ -1,0 +1,119 @@
+<%- include('partials/cabeca') %>
+<section class="abertura">
+  <div class="abertura-deco" aria-hidden="true">
+    <img class="curvas c1" src="/static/img/curvas-se.png" alt="" width="312" height="474">
+    <img class="curvas c2" src="/static/img/curvas-id.png" alt="" width="499" height="583">
+    <span class="lamina l1"></span><span class="lamina l2"></span><span class="lamina l3"></span><span class="lamina l4"></span>
+    <span class="pontos p1"></span><span class="pontos p2"></span>
+  </div>
+  <div class="envoltorio abertura-texto">
+    <h1 class="abertura-marca"><img src="/static/img/logo-principal.png" alt="FoMerco" width="900" height="729"></h1>
+    <p class="abertura-nome"><%= cfg.hero_titulo %></p>
+    <p class="chamada"><%= cfg.hero_texto %></p>
+    <div class="acoes">
+      <a class="botao" href="/sobre">Conheça o FoMerco</a>
+      <a class="botao contorno" href="#carta">Ler a Carta FoMerco</a>
+    </div>
+  </div>
+</section>
+
+<% if (cfg.evento_ativo === '1') { %>
+<section class="evento-secao" aria-labelledby="evento-titulo">
+  <div class="envoltorio evento-moldura">
+    <div class="evento">
+      <div class="skyline skyline-topo" aria-hidden="true"><% for (let i = 0; i < 4; i++) { %><img src="<%= eventoImg.topo %>" alt="" loading="lazy"><% } %></div>
+      <img class="curvas-evento" src="/static/img/curvas-sd.png" alt="" aria-hidden="true" width="476" height="432" loading="lazy">
+      <span class="pontos-evento" aria-hidden="true"></span>
+      <div class="evento-corpo">
+        <div class="evento-nome">
+          <span class="selo">Próximo encontro</span>
+          <h2 id="evento-titulo"><% if (eventoNome.numero) { %><span class="numeral"><%= eventoNome.numero %></span> <% } %><span class="resto"><%= eventoNome.resto %></span></h2>
+          <% if (cfg.evento_tema) { %><p class="tema"><%= cfg.evento_tema %></p><% } %>
+        </div>
+        <div class="evento-info">
+          <dl>
+            <% if (cfg.evento_datas) { %><div><dt>Quando</dt><dd><%= cfg.evento_datas %></dd></div><% } %>
+            <% if (cfg.evento_local) { %><div><dt>Onde</dt><dd><%= cfg.evento_local %></dd></div><% } %>
+          </dl>
+          <% if (cfg.evento_texto) { %><p><%= cfg.evento_texto %></p><% } %>
+          <% if (cfg.evento_link) { %><a class="botao vermelho" href="<%= cfg.evento_link %>" rel="noopener" target="_blank"><%= cfg.evento_botao %></a><% } %>
+        </div>
+      </div>
+      <div class="skyline skyline-base" aria-hidden="true"><% for (let i = 0; i < 4; i++) { %><img src="<%= eventoImg.base %>" alt="" loading="lazy"><% } %></div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (carta) { const n = carta.atual; %>
+<section class="carta-destaque" id="carta" aria-labelledby="carta-titulo">
+  <img class="curvas-carta" src="/static/img/curvas-ie.png" alt="" aria-hidden="true" width="632" height="711" loading="lazy">
+  <div class="envoltorio carta-grade">
+    <% if (n) { %>
+    <a class="carta-capa" href="/carta/<%= n.slug %>" aria-label="Abrir <%= carta.titulo %>, <%= n.designacao %>">
+      <% if (n.capa_url) { %>
+        <img src="<%= n.capa_url %>" alt="Capa de <%= carta.titulo %>, <%= n.designacao %>">
+      <% } else { %>
+        <span class="capa-gerada">
+          <img class="capa-curvas" src="/static/img/curvas-sd.png" alt="" width="476" height="432">
+          <span class="capa-pub"><%= carta.titulo %></span>
+          <span class="capa-titulo"><%= n.titulo || n.designacao %></span>
+          <span class="capa-desig"><%= n.designacao %></span>
+          <img class="capa-logo" src="/static/img/logo-sem-fundo.png" alt="" width="800" height="502">
+        </span>
+      <% } %>
+    </a>
+    <% } %>
+    <div class="carta-info">
+      <h2 id="carta-titulo" class="com-marca"><%= carta.titulo %></h2>
+      <p class="carta-sobre"><%= carta.descricao %></p>
+      <% if (n) { %>
+      <div class="carta-numero">
+        <p class="rotulo">Número atual <span><%= n.designacao %></span></p>
+        <h3><a href="/carta/<%= n.slug %>"><%= n.titulo || n.designacao %></a></h3>
+        <% if (n.data_publicacao) { %><p class="data"><%= formatarData(n.data_publicacao) %></p><% } %>
+        <% if (n.resumo) { %><p><%= n.resumo %></p><% } %>
+      </div>
+      <% } else { %>
+      <p class="vazio">O primeiro número será publicado em breve.</p>
+      <% } %>
+      <div class="acoes">
+        <% if (n) { %><a class="botao" href="<%= n.pdf_url || `/carta/${n.slug}` %>">Ler este número</a><% } %>
+        <% if (carta.submissao) { %><a class="botao vermelho" href="<%= carta.submissao %>" <%- /^https?:/i.test(carta.submissao) ? 'rel="noopener" target="_blank"' : '' %>>Enviar um texto</a><% } %>
+        <a class="botao contorno" href="/carta/numeros#anteriores">Números anteriores</a>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<% if (anais) { const n = anais.atual; %>
+<section class="bloco anais-bloco" aria-labelledby="anais-titulo">
+  <div class="envoltorio">
+    <div class="anais-cartao">
+      <div>
+        <h2 id="anais-titulo" class="com-marca"><%= anais.titulo %></h2>
+        <p><%= anais.descricao %></p>
+        <ul class="losangos">
+          <li><a href="/anais/apresentacao">Apresentação</a></li>
+          <li><a href="/anais/expediente">Expediente</a></li>
+          <li><a href="/anais/normas">Normas para publicação</a></li>
+          <li><a href="/anais/numeros#anteriores">Números anteriores</a></li>
+        </ul>
+      </div>
+      <div class="anais-atual">
+        <% if (n) { %>
+          <p class="rotulo">Número atual</p>
+          <p class="desig"><a href="/anais/<%= n.slug %>"><%= n.designacao %></a></p>
+          <% if (n.titulo) { %><p><%= n.titulo %></p><% } %>
+          <p class="contagem"><%= n.total_trabalhos %> <%= n.total_trabalhos === 1 ? 'trabalho' : 'trabalhos' %></p>
+          <a class="botao" href="/anais/<%= n.slug %>">Ver sumário</a>
+        <% } else { %>
+          <p>O primeiro número será publicado em breve.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+<%- include('partials/pe') %>

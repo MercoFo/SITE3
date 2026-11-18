@@ -1,0 +1,29 @@
+<%- include('_topo', { tituloAdmin: 'Início' }) %>
+<h1>Olá, <%= usuario.usuario %></h1>
+<p class="intro">Escolha o que quer atualizar. As mudanças aparecem no site assim que você salva.</p>
+<div class="atalhos">
+  <a class="atalho evento" href="/admin/evento">
+    <strong>Evento atual</strong>
+    <span><%= cfg.evento_ativo === '1' ? `Mostrando “${cfg.evento_nome}” na página inicial` : 'Bloco do evento escondido' %></span>
+  </a>
+  <% for (const p of pubs) { %>
+  <a class="atalho <%= p.slug %>" href="/admin/pub/<%= p.slug %>">
+    <strong><%= p.titulo %></strong>
+    <span><%= p.publicados %> <%= p.publicados === 1 ? 'número publicado' : 'números publicados' %><%= p.numeros.length > p.publicados ? `, ${p.numeros.length - p.publicados} em rascunho` : '' %></span>
+  </a>
+  <% } %>
+  <a class="atalho" href="/admin/paginas">
+    <strong>Páginas de texto</strong>
+    <span>Sobre, Apresentação, Expediente e Normas</span>
+  </a>
+</div>
+<% const limite = 5 * 1024 * 1024 * 1024; const pct = Math.min(100, uso.bytes / limite * 100); %>
+<section class="painel-secao">
+  <h2>Espaço usado pelos arquivos</h2>
+  <div class="medidor" role="img" aria-label="<%= pct.toFixed(1).replace('.', ',') %>% de 5 GB usados">
+    <progress max="100" value="<%= pct.toFixed(2) %>"></progress>
+  </div>
+  <p><strong><%= tamanhoLegivel(uso.bytes) || '0 KB' %></strong> de 5 GB (<%= pct < 0.1 && uso.bytes > 0 ? 'menos de 0,1' : pct.toFixed(1).replace('.', ',') %>%), em <%= uso.n %> <%= uso.n === 1 ? 'arquivo' : 'arquivos' %>.</p>
+  <p class="nota">5 GB é o limite do plano gratuito do Turso. Confira o valor atual no painel do Turso, porque os planos podem mudar.</p>
+</section>
+<%- include('_fim') %>

@@ -1,0 +1,36 @@
+<%- include('_topo', { tituloAdmin: 'Menu' }) %>
+<h1>Menu do site</h1>
+<p class="intro">Renomeie, reordene ou esconda os itens do menu do topo, e adicione até <%= maxExtras %> links extras. A ordem vai do menor para o maior número.</p>
+<% if (erro) { %><p class="aviso erro" role="alert"><%= erro %></p><% } %>
+<form method="post" class="formulario largo">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <table class="tabela tabela-menu">
+    <thead><tr><th>Item</th><th>Nome no menu</th><th>Ordem</th><th>Mostrar</th></tr></thead>
+    <tbody>
+    <% const descricao = { inicio: 'Página inicial', sobre: 'Página Sobre', anais: 'Anais do FoMerco', carta: 'Carta FoMerco', evento: 'Link do evento atual (Even3)' }; %>
+    <% for (const item of m.fixos) { %>
+      <tr>
+        <td><%= descricao[item.chave] %></td>
+        <td><input name="rotulo_<%= item.chave %>" value="<%= item.chave === 'evento' ? (item.rotulo || '') : item.rotulo %>" maxlength="40" aria-label="Nome de <%= descricao[item.chave] %>" <%- item.chave === 'evento' ? `placeholder="${cfg.evento_nome || 'Nome do evento'}"` : 'required' %>></td>
+        <td><input name="ordem_<%= item.chave %>" value="<%= item.ordem %>" inputmode="numeric" maxlength="4" class="curto" aria-label="Ordem de <%= descricao[item.chave] %>"></td>
+        <td><% if (item.chave === 'inicio') { %>Sempre<% } else { %><input type="checkbox" name="visivel_<%= item.chave %>" value="1" <%= item.visivel ? 'checked' : '' %> aria-label="Mostrar <%= descricao[item.chave] %>"><% } %></td>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  <p class="nota">Deixe o nome do link do evento em branco para usar o nome do evento atual, como “XXI FoMerco”.</p>
+  <fieldset>
+    <legend>Links extras</legend>
+    <p class="nota">Para outros sites (começando com https://) ou páginas deste site (começando com /). Deixe em branco o que não for usar.</p>
+    <% for (let i = 0; i < maxExtras; i++) { const x = m.extras[i] || {}; %>
+    <div class="tres">
+      <label>Nome<input name="extra_rotulo_<%= i %>" value="<%= x.rotulo || '' %>" maxlength="40"></label>
+      <label>Endereço<input name="extra_href_<%= i %>" value="<%= x.href || '' %>" maxlength="500" placeholder="https://..."></label>
+      <label>Ordem<input name="extra_ordem_<%= i %>" value="<%= x.ordem ?? '' %>" inputmode="numeric" maxlength="4"></label>
+    </div>
+    <% } %>
+  </fieldset>
+  <p class="nota">As abas dentro dos Anais e da Carta (Apresentação, Expediente, Número atual, Números anteriores e Normas) têm nomes fixos, porque são os termos exigidos para o ISSN.</p>
+  <div class="barra"><button class="botao">Salvar menu</button></div>
+</form>
+<%- include('_fim') %>
